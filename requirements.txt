@@ -1,4 +1,6 @@
 flask
+flask_restful
+flask_script
 pymongo
 mongoengine
 python-dateutil
