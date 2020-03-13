@@ -1,15 +1,16 @@
-import mongoengine
+# import mongoengine
+from models import db
 
 COMPANY_TYPES = ('NGO', 'Company')
 
-class Company(mongoengine.document):
-    CompanyName = mongoengine.StringField(required=True)
-    Type = mongoengine.StringField(choices=COMPANY_TYPES)
-    LogoUrl = mongoengine.StringField
-    PrimaryColor = mongoengine.StringField
-    SecondaryColor = mongoengine.StringField
+class Company(db.Document):
+    CompanyName = db.StringField(required=True)
+    Type = db.StringField(choices=COMPANY_TYPES)
+    LogoUrl = db.StringField
+    PrimaryColor = db.StringField
+    SecondaryColor = db.StringField
 
     meta ={
-        'db_alias': 'db_conn',
+        # 'db_alias': 'db_conn',
         'collection': 'companies'
     }
