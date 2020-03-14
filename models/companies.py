@@ -1,4 +1,3 @@
-# import mongoengine
 from models import db
 
 COMPANY_TYPES = ('NGO', 'Company')
@@ -11,6 +10,5 @@ class Company(db.Document):
     SecondaryColor = db.StringField
 
     meta ={
-        # 'db_alias': 'db_conn',
         'collection': 'companies'
     }
