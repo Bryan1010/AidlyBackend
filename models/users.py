@@ -12,3 +12,7 @@ class User(db.Document):
     time_availability = db.ListField(db.DateTimeField())
 
     appointments = db.EmbeddedDocumentListField(Appointment)
+
+    meta ={
+        'collection': 'users'
+    }
