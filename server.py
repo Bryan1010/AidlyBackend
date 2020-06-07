@@ -1,5 +1,5 @@
 from mainapp import MAIN_APP
-from models.company import Company
+# from models.company import Company
 from flask import request, Response
 
 @MAIN_APP.route('/')
