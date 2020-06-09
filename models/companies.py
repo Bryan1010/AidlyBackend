@@ -3,13 +3,11 @@ from sqlalchemy import *
 from datetime import datetime
 
 
-
-
 class Company(db.Model):
     """ Company Model data class """
     __tablename__ = "Companies"
     id = Column(Integer, index=True, primary_key=True, autoincrement=True)
-    name = Column(String(100))
+    name = Column(String(100), nullable=false)
 
     logo_url = Column(Text)
 
@@ -28,7 +26,18 @@ class Company(db.Model):
 
     date_created = Column(DateTime, default=datetime.now())
 
+    users = db.relationship('CompanyUsers', backref='company')
+
     # positions = db.EmbeddedDocumentListField(Position)
+
+
+class CompanyUsers(db.Model):
+    """ Company Users Model data class """
+    __tablename__ = "CompanyUsers"
+    id = Column(Integer, index=True, primary_key=True, autoincrement=True)
+    company_id = Column(Integer, db.ForeignKey('Companies.id'), primary_key=True)
+    user_id = Column(Integer, db.ForeignKey('Users.id'), primary_key=True)
+    is_admin = Column(Boolean, default=False)
 
 
 class CompanyType(db.Model):

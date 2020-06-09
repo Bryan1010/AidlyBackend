@@ -13,12 +13,11 @@ class User(db.Model):
     mission_statement = Column(Text)
     interests = db.relationship('UserInterest', backref='user')
 
-    company_owner = db.relationship('Company', backref='main_contact')
-
     password = Column(Text)
 
-    # time_availability = db.ListField(db.DateTimeField())
+    company = db.relationship('CompanyUsers', backref='user')
 
+    # time_availability = db.ListField(db.DateTimeField())
     # appointments = db.EmbeddedDocumentListField(Appointment)
     date_created = Column(DateTime, default=datetime.now())
 
