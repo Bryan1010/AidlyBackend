@@ -18,6 +18,7 @@ db.session.commit()
 
 # try to create an interest
 from models.users import Interest
+
 interest = Interest(interest_name='Photography')
 db.session.add(interest)
 db.session.commit()
@@ -28,6 +29,7 @@ db.session.commit()
 
 # create UserInterest
 from models.users import UserInterest
+
 userInterest = UserInterest(user=user, interest=interest)
 db.session.add(userInterest)
 db.session.commit()
@@ -39,7 +41,6 @@ db.session.commit()
 userInterest3 = UserInterest(user=user, interest=interest2)
 db.session.add(userInterest3)
 db.session.commit()
-
 
 # Retrieve Data
 # 1. get a user
@@ -56,3 +57,14 @@ user1_interest2_name = user1_interests[1].interest.interest_name
 print(f'Interest 1 = {user1_interest1_name}')
 print(f'Interest 2 = {user1_interest2_name}')
 
+from models.companies import *
+
+# Create a company
+company = Company(name='Big Brothers')
+db.session.add(company)
+db.session.commit()
+
+# add user as a company admin
+companyUser = CompanyUsers(company=company, user=user, is_admin=True)
+db.session.add(companyUser)
+db.session.commit()
