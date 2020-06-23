@@ -9,8 +9,10 @@ from mainapp import db
 db.create_all()
 
 # try to create dummy user
-user = User(email='yo@lo.co', first_name='bryan', last_name='cruz')
-user2 = User(email='second@email.com', first_name='Joe', last_name='Chill')
+user = User(email='yo@lo.co', first_name='bryan', last_name='cruz', password='password')
+user.hash_password()
+user2 = User(email='second@email.com', first_name='Joe', last_name='Chill', password='password')
+user2.hash_password()
 
 db.session.add(user)
 db.session.add(user2)
@@ -51,6 +53,7 @@ retrieved_user2 = User.query.filter_by(id=2).first()
 print('get interests for user id 1')
 # Get list of interests
 user1_interests = retrieved_user1.interests
+print(user1_interests)
 # get interest name
 user1_interest1_name = user1_interests[0].interest.interest_name
 user1_interest2_name = user1_interests[1].interest.interest_name
