@@ -17,7 +17,7 @@ class User(db.Model):
     mission_statement = Column(Text)
     interests = db.relationship('UserInterest', backref='user')
 
-    password = Column(String(255))
+    password = Column(String(250), nullable=False)
     authenticated = Column(Boolean, default=False)
 
     company = db.relationship('CompanyUsers', backref='user')
