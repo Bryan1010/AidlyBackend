@@ -37,7 +37,10 @@ def get_token():
         user = User.query.filter_by(email=user_email).first()
     except NoResultFound:
         return jsonify({'token': ''}), 401
+
+    # need to decode to ascii to get non-byte token
     token = base64.b64encode(user.generate_auth_token()).decode('ascii')
+    
     # If password is correct, return auth token
     if User.check_password(self=user, password=user_pass):
         return jsonify(token= token), 200
