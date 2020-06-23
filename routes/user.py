@@ -3,6 +3,7 @@ from models.users import User, UserInterest
 # from models.Interests import Interest, UserInterest
 from sqlalchemy.orm.exc import NoResultFound
 from models import  db
+import base64
 
 user_blueprint = Blueprint('user', __name__)
 
@@ -36,10 +37,10 @@ def get_token():
         user = User.query.filter_by(email=user_email).first()
     except NoResultFound:
         return jsonify({'token': ''}), 401
-
+    token = base64.b64encode(user.generate_auth_token()).decode('ascii')
     # If password is correct, return auth token
     if User.check_password(self=user, password=user_pass):
-        return jsonify({'token': user.generate_auth_token()}), 200
+        return jsonify(token= token), 200
     else:
         return jsonify({'token': ''}), 401
 
