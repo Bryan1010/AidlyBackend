@@ -9,10 +9,10 @@ from mainapp import db
 db.create_all()
 
 # try to create dummy user
-user = User(email='yo@lo.co', first_name='bryan', last_name='cruz', password='password')
-user.hash_password()
-user2 = User(email='second@email.com', first_name='Joe', last_name='Chill', password='password')
-user2.hash_password()
+user = User(email='yo@lo.co', first_name='bryan', last_name='cruz', password='password', mission_statement= 'This is my mission')
+# user.hash_password()
+user2 = User(email='second@email.com', first_name='Joe', last_name='Chill', password='password', mission_statement='')
+# user2.hash_password()
 
 db.session.add(user)
 db.session.add(user2)
