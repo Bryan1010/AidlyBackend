@@ -19,12 +19,21 @@ class User(db.Model):
 
     password = Column(String(250), nullable=False)
     authenticated = Column(Boolean, default=False)
+    super_admin = Column(Boolean, default=False)
 
     company = db.relationship('CompanyUsers', backref='user')
 
     # time_availability = db.ListField(db.DateTimeField())
     # appointments = db.EmbeddedDocumentListField(Appointment)
     date_created = Column(DateTime, default=datetime.now())
+
+    def __init__(self, email, password, first_name, last_name, mission_statement, super_admin=False):
+        self.email = email
+        self.password = generate_password_hash(password).decode('utf8')
+        self.first_name = first_name
+        self.last_name = last_name
+        self.mission_statement = mission_statement
+        self.super_admin = super_admin
 
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'
