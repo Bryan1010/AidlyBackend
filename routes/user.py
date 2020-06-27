@@ -3,6 +3,7 @@ from models.users import User, UserInterest
 # from models.Interests import Interest, UserInterest
 from sqlalchemy.orm.exc import NoResultFound
 from models import  db
+from models.blacklistTokens import BlacklistToken
 import base64
 
 user_blueprint = Blueprint('user', __name__)
@@ -64,10 +65,17 @@ def create_user():
 @user_blueprint.route('/tokenStatus', methods=['POST'])
 def check_token():
     # get the auth token
-    # Header needs to have a Authorization: Bearer TOKENHERE
+    # Header needs to have a Authorization: Bearer TOKEN_HERE
     auth_header = request.headers.get('Authorization')
     if auth_header:
-        auth_token = auth_header.split(" ")[1]
+        try:
+            auth_token = auth_header.split(" ")[1]
+        except IndexError:
+            responseObject = {
+                'status': 'fail',
+                'message': 'Bearer token malformed.'
+            }
+            return make_response(jsonify(responseObject)), 401
     else:
         auth_token = ''
     if auth_token:
@@ -114,7 +122,7 @@ def get_token():
         return jsonify({'token': ''}), 401
 
 @user_blueprint.route('/login', methods=['POST'])
-def LoginUser():
+def Login():
     # get the post data
     post_data = request.get_json()
     try:
@@ -144,3 +152,51 @@ def LoginUser():
             'message': 'Try again'
         }
         return make_response(jsonify(responseObject)), 500
+
+@user_blueprint.route('/logout', methods=['POST'])
+def Logout():
+    # get auth token
+    auth_header = request.headers.get('Authorization')
+    if auth_header:
+        try:
+            auth_token = auth_header.split(" ")[1]
+        except IndexError:
+            responseObject = {
+                'status': 'fail',
+                'message': 'Bearer token malformed.'
+            }
+            return make_response(jsonify(responseObject)), 401
+    else:
+        auth_token = ''
+    if auth_token:
+        resp = User.decode_auth_token(auth_token)
+        if not isinstance(resp, str):
+            # mark the token as blacklisted
+            blacklist_token = BlacklistToken(token=auth_token)
+            try:
+                # insert the token
+                db.session.add(blacklist_token)
+                db.session.commit()
+                responseObject = {
+                    'status': 'success',
+                    'message': 'Successfully logged out.'
+                }
+                return make_response(jsonify(responseObject)), 200
+            except Exception as e:
+                responseObject = {
+                    'status': 'fail',
+                    'message': e
+                }
+                return make_response(jsonify(responseObject)), 200
+        else:
+            responseObject = {
+                'status': 'fail',
+                'message': resp
+            }
+            return make_response(jsonify(responseObject)), 401
+    else:
+        responseObject = {
+            'status': 'fail',
+            'message': 'Provide a valid auth token.'
+        }
+        return make_response(jsonify(responseObject)), 403
