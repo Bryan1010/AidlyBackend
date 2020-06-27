@@ -9,3 +9,4 @@ flask_marshmallow
 SQLAlchemy~=1.3.17
 flask-bcrypt
 cryptography
+PyJWT==1.4.2
