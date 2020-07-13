@@ -2,14 +2,14 @@ from flask import Blueprint, Response, request, json, jsonify, make_response
 from models.users import User, UserInterest
 # from models.Interests import Interest, UserInterest
 from sqlalchemy.orm.exc import NoResultFound
-from models import  db
+from models import db
 from models.blacklistTokens import BlacklistToken
 import base64
 
 user_blueprint = Blueprint('user', __name__)
 
 
-@user_blueprint.route('/yolozurc', methods=['GET'] )
+@user_blueprint.route('/yolozurc', methods=['GET'])
 def get_company():
     user = User(first_name='bryan', last_name='cruz', email='b@ca.com')
     db.session.add(user)
@@ -17,7 +17,7 @@ def get_company():
     return 'added new user!'
 
 
-@user_blueprint.route('/getyolo/<email>', methods=['GET'] )
+@user_blueprint.route('/getyolo/<email>', methods=['GET'])
 def get_user(email):
     user = User.query.filter_by(email=email).first()
     # interest = UserInterest.query.filter_by(user=user)
@@ -62,6 +62,7 @@ def create_user():
         }
         return make_response(jsonify(responseObject)), 202
 
+
 @user_blueprint.route('/tokenStatus', methods=['POST'])
 def check_token():
     # get the auth token
@@ -103,23 +104,27 @@ def check_token():
         }
         return make_response(jsonify(responseObject)), 401
 
+
 @user_blueprint.route('/token', methods=['POST'])
 def get_token():
     user_email = request.json.get('email')
     user_pass = request.json.get('password')
     try:
         user = User.query.filter_by(email=user_email).first()
+        if user is None:
+            raise NoResultFound('no results found')
     except NoResultFound:
         return jsonify({'token': ''}), 401
 
     # need to decode to ascii to get non-byte token
     token = base64.b64encode(user.generate_auth_token()).decode('ascii')
-    
+
     # If password is correct, return auth token
     if User.check_password(self=user, password=user_pass):
-        return jsonify(token= token), 200
+        return jsonify(token=token, firstName=user.first_name, lastName=user.last_name), 200
     else:
         return jsonify({'token': ''}), 401
+
 
 @user_blueprint.route('/login', methods=['POST'])
 def Login():
@@ -149,9 +154,10 @@ def Login():
         print(e)
         responseObject = {
             'status': 'fail',
-            'message': 'Try again'
+            'message': 'Try again later.'
         }
         return make_response(jsonify(responseObject)), 500
+
 
 @user_blueprint.route('/logout', methods=['POST'])
 def Logout():
