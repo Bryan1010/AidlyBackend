@@ -1,6 +1,6 @@
 from flask import Blueprint, Response, request, json, jsonify, make_response
-from models.users import User, UserInterest
-# from models.Interests import Interest, UserInterest
+from models.users import User
+from models.interests import Interest, UserInterest
 from sqlalchemy.orm.exc import NoResultFound
 from models import  db
 from models.blacklistTokens import BlacklistToken
@@ -11,7 +11,7 @@ user_blueprint = Blueprint('user', __name__)
 
 @user_blueprint.route('/yolozurc', methods=['GET'] )
 def get_company():
-    user = User(first_name='bryan', last_name='cruz', email='b@ca.com')
+    user = User(first_name='bryan', last_name='cruz', email='b@ca.com', password='password')
     db.session.add(user)
     db.session.commit()
     return 'added new user!'
