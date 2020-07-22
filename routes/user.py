@@ -1,6 +1,6 @@
 from flask import Blueprint, Response, request, json, jsonify, make_response
-from models.users import User, UserInterest
-# from models.Interests import Interest, UserInterest
+from models.users import User
+from models.interests import Interest, UserInterest
 from sqlalchemy.orm.exc import NoResultFound
 from models import  db
 from models.blacklistTokens import BlacklistToken

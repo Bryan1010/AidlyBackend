@@ -100,18 +100,3 @@ class User(db.Model):
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
 
-
-class Interest(db.Model):
-    """ Interest Model data class """
-    __tablename__ = "Interests"
-    id = Column(Integer, index=True, primary_key=True, autoincrement=True)
-    interest_name = Column(String(50))
-    users_interested = db.relationship('UserInterest', backref='interest')
-
-
-class UserInterest(db.Model):
-    """ User Interest Model data class """
-    __tablename__ = "UserInterests"
-    id = Column(Integer, index=True, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, db.ForeignKey('Users.id'), primary_key=True)
-    interest_id = Column(Integer, db.ForeignKey('Interests.id'), primary_key=True)

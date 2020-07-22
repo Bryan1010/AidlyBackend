@@ -17,7 +17,7 @@ db.session.add(user2)
 db.session.commit()
 
 # try to create an interest
-from models.users import Interest
+from models.interests import Interest
 
 interest = Interest(interest_name='Photography')
 db.session.add(interest)
@@ -28,7 +28,7 @@ db.session.add(interest2)
 db.session.commit()
 
 # create UserInterest
-from models.users import UserInterest
+from models.interests import UserInterest
 
 userInterest = UserInterest(user=user, interest=interest)
 db.session.add(userInterest)
