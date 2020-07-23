@@ -1,4 +1,4 @@
-from models.company import Company
+from models.companies import Company
 from flask import json
 
 def create_Company(comp):
