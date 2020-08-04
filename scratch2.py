@@ -1,40 +1,26 @@
 import pandas as pd
-import texthero as hero
 from mainapp import db
 from models.companies import *
-
-def uploadCompany(name="", logo_url="", primary_color="", secondary_color="", ein="", misson_statment=""):
-    db.session.add(Company(name=name, mission_statement=misson_statment))
-    db.session.commit()
+from models.topics import *
+from models.startData import *
 
 
-def tokenizeCompanies():
-    df = pd.read_sql(sql=db.session.query(Company).with_entities(Company.id, Company.name, Company.mission_statement).statement, con=db.session.bind)
-    df['clean_mission'] = df['mission_statement'].pipe(hero.clean)
-    df['tokenize'] = df['clean_mission'].pipe(hero.tokenize)
-    return df
-
-
-
-
-df = pd.read_csv("C:\\Users\\ddeto\\PycharmProjects\\AidlyAI\\Data\\berks_NGOs.csv")
-
-df['clean_mission'] = df['Mission_Statement'].pipe(hero.clean)
-
-df['tokenize'] = df['clean_mission'].pipe(hero.tokenize)
-
-
-
-# initialize connection to DB
+def importStartData():
+    data = pd.read_csv("start_data.csv")
+    data = data[['NAME', 'F9_03_PZ_MISSION']]
+    data = data.dropna()
+    data['F9_03_PZ_MISSION'] = data['F9_03_PZ_MISSION'].apply(lambda x: x.replace('NBSP;', ''))
+    data = data[data.F9_03_PZ_MISSION != 'NONE']
+    data = data[data.NAME != "Serenity Sista's Inc"]
+    data = data[~data["F9_03_PZ_MISSION"].str.contains("SCHEDULE O")]
+    data = data[~data["F9_03_PZ_MISSION"].str.contains("Schedule O")]
+    data = data[~data["F9_03_PZ_MISSION"].str.contains("SEE ATTACHED COPY OF MISSION STATEMENT")]
+    for index, row in data.iterrows():
+        db.session.add(StartData(name=row['NAME'], mission_statement=row['F9_03_PZ_MISSION']))
+        db.session.commit()
 
 
 # Create Tables on DB
 db.create_all()
 
-for index, company in df.iterrows():
-    uploadCompany(company['Name'], company['Mission_Statement'])
-
-
-
-
-
+importStartData()
