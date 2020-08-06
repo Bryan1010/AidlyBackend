@@ -19,6 +19,12 @@ def get_company():
     db.session.commit()
     return 'added new user!'
 
+@user_blueprint.route('/byezurc', methods=['GET'] )
+def remove_company():
+    user = User(first_name='bryan', last_name='cruz', email='b@ca.com', password='password')
+    db.session.delete(user)
+    db.session.commit()
+    return 'deleted new user!'
 
 @user_blueprint.route('/getyolo/<email>', methods=['GET'] )
 def get_user(email):

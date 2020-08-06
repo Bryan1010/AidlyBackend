@@ -9,4 +9,4 @@ def hello_world():
 
 
 if(__name__ == "__main__"):
-    MAIN_APP.run(debug=True, port=1234)
+    MAIN_APP.run(host='0.0.0.0', debug=True, port=1234)

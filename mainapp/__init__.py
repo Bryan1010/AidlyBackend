@@ -25,6 +25,8 @@ bcrypt = Bcrypt(MAIN_APP)
 
 from routes.user import user_blueprint
 from routes.company import company_blueprint
+from routes.db import db_blueprint
 
 MAIN_APP.register_blueprint(company_blueprint, url_prefix='/company')
 MAIN_APP.register_blueprint(user_blueprint, url_prefix='/user')
+MAIN_APP.register_blueprint(db_blueprint, url_prefix='/db')
