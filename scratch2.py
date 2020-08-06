@@ -15,6 +15,7 @@ def importStartData():
     data = data[~data["F9_03_PZ_MISSION"].str.contains("SCHEDULE O")]
     data = data[~data["F9_03_PZ_MISSION"].str.contains("Schedule O")]
     data = data[~data["F9_03_PZ_MISSION"].str.contains("SEE ATTACHED COPY OF MISSION STATEMENT")]
+
     for index, row in data.iterrows():
         db.session.add(Company(name=row['NAME'], mission_statement=row['F9_03_PZ_MISSION']))
         db.session.commit()
