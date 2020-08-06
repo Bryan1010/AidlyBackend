@@ -28,6 +28,8 @@ class Company(db.Model):
 
     users = db.relationship('CompanyUsers', backref='company')
 
+    active = Column(Boolean, default=False)
+
     # positions = db.EmbeddedDocumentListField(Position)
 
 
