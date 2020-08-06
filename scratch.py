@@ -1,6 +1,9 @@
-from mainapp import MAIN_APP
-from models import *
+# from mainapp import MAIN_APP
+
 from models.users import User
+
+# initialize models
+from models import *
 
 # initialize connection to DB
 from mainapp import db

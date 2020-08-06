@@ -8,10 +8,13 @@ import base64
 
 user_blueprint = Blueprint('user', __name__)
 
+@user_blueprint.route('/')
+def hello_world():
+    return 'Hello, Aidly User !'
 
 @user_blueprint.route('/yolozurc', methods=['GET'] )
 def get_company():
-    user = User(first_name='bryan', last_name='cruz', email='b@ca.com')
+    user = User(first_name='bryan', last_name='cruz', email='b@ca.com', password='password')
     db.session.add(user)
     db.session.commit()
     return 'added new user!'
