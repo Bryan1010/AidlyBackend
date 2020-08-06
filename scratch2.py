@@ -3,6 +3,7 @@ from mainapp import db
 from models.companies import *
 from models.topics import *
 from models.startData import *
+from models import *
 
 
 def importStartData():
@@ -24,3 +25,8 @@ def importStartData():
 db.create_all()
 
 importStartData()
+
+def createCompany():
+    data = pd.read_csv("berks_data.csv")
+
+    pass

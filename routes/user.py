@@ -8,6 +8,9 @@ import base64
 
 user_blueprint = Blueprint('user', __name__)
 
+@user_blueprint.route('/')
+def hello_world():
+    return 'Hello, Aidly User !'
 
 @user_blueprint.route('/yolozurc', methods=['GET'] )
 def get_company():

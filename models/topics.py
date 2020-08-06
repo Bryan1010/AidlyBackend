@@ -1,11 +1,12 @@
 from models import db
-from sqlalchemy import Column, Integer
+from sqlalchemy import Column, Integer, Text
 
 
 class Topic(db.Model):
     """ Topic Model data class """
     __tablename__ = "Topics"
     id = Column(Integer, index=True, primary_key=True, autoincrement=True)
+    name = Column(Text)
     users_interested = db.relationship('UserTopic', backref='UserTopic')
     company_interested = db.relationship('CompanyTopic', backref='CompanyTopic')
 
