@@ -7,7 +7,7 @@ from models import *
 
 def importStartData():
     data = pd.read_csv("start_data.csv")
-    data = data[['NAME', 'F9_03_PZ_MISSION']]
+    data = data[['NAME', 'F9_03_PZ_MISSION', 'Orgemail','Address','City','State','Zip','Primarycontactphone']]
     data = data.dropna()
     data['F9_03_PZ_MISSION'] = data['F9_03_PZ_MISSION'].apply(lambda x: x.replace('NBSP;', ''))
     data = data[data.F9_03_PZ_MISSION != 'NONE']
@@ -17,7 +17,15 @@ def importStartData():
     data = data[~data["F9_03_PZ_MISSION"].str.contains("SEE ATTACHED COPY OF MISSION STATEMENT")]
 
     for index, row in data.iterrows():
-        db.session.add(Company(name=row['NAME'], mission_statement=row['F9_03_PZ_MISSION']))
+        rowCompany = Company(name=row['NAME'], mission_statement=row['F9_03_PZ_MISSION'],
+            main_email = row['Orgemail'], primary_phone = row['Primarycontactphone'])
+        
+        address = CompanyAddress(company=rowCompany, address1=row['Address'],
+            city=row['City'], state=row['State'], zip=row['Zip'], is_primary=True)
+
+        
+        db.session.add(rowCompany)
+        db.session.add(address)
         db.session.commit()
 
 
