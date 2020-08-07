@@ -18,11 +18,15 @@ class Company(db.Model):
     ein = Column(String(50))
     mission_statement = Column(Text)
 
+    main_email = Column(String(150))
+
     main_contact = Column(Integer, db.ForeignKey('Users.id'))
 
     company_type_id = Column(Integer, db.ForeignKey('CompanyTypes.id'))
 
     addresses = db.relationship('CompanyAddress', backref='company')
+
+    primary_phone = Column(String(30))
 
     date_created = Column(DateTime, default=datetime.now())
 
