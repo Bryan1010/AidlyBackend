@@ -13,3 +13,4 @@ PyJWT==1.4.2
 DateTime~=4.3
 itsdangerous~=1.1.0
 pandas~=1.0.5
+pycaret~=2.0.0
