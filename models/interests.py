@@ -6,7 +6,7 @@ class Interest(db.Model):
     """ Interest Model data class """
     __tablename__ = "Interests"
     id = Column(Integer, index=True, primary_key=True, autoincrement=True)
-    interest_name = Column(String(50))
+    name = Column(String(50))
     users_interested = db.relationship('UserInterest', backref='UserInterest')
     company_interested = db.relationship('CompanyInterest', backref='CompanyInterest')
     topic_interested = db.relationship('TopicInterest', backref='TopicInterest')

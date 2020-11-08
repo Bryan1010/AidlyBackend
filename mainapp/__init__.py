@@ -4,12 +4,14 @@ Main App Initialization
 from flask import Flask
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 import os
 
 load_dotenv()
 
 MAIN_APP = Flask(__name__)
+CORS(MAIN_APP)
 
 MAIN_APP.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DBCONN')
 MAIN_APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -25,9 +27,9 @@ bcrypt = Bcrypt(MAIN_APP)
 
 from routes.user import user_blueprint
 from routes.company import company_blueprint
-from routes.db import db_blueprint
+from routes.development import dev_blueprint
 from models.matches import Matches
 
 MAIN_APP.register_blueprint(company_blueprint, url_prefix='/company')
 MAIN_APP.register_blueprint(user_blueprint, url_prefix='/user')
-MAIN_APP.register_blueprint(db_blueprint, url_prefix='/db')
+MAIN_APP.register_blueprint(dev_blueprint, url_prefix='/dev')

@@ -7,6 +7,7 @@ from flask_bcrypt import generate_password_hash, check_password_hash
 import jwt
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
+import base64
 
 
 class User(db.Model):
@@ -17,7 +18,9 @@ class User(db.Model):
     first_name = Column(String(50), nullable=False)
     last_name = Column(String(50), nullable=False)
     mission_statement = Column(Text)
+    phone_number = Column(Text)
     interests = db.relationship('UserInterest', backref='user')
+    zip = Column(String(20))
 
     password = Column(String(250), nullable=False)
     authenticated = Column(Boolean, default=False)
@@ -25,17 +28,19 @@ class User(db.Model):
 
     company = db.relationship('CompanyUsers', backref='user')
 
-    # time_availability = db.ListField(db.DateTimeField())
+    time_availability = Column(String(20))
+    week_availability = Column(String(20))
     # appointments = db.EmbeddedDocumentListField(Appointment)
     date_created = Column(DateTime, default=datetime.now())
 
-    def __init__(self, email, password, first_name='', last_name='', mission_statement='', super_admin=False):
+    def __init__(self, email, password, phone_number, zip, first_name='', last_name='', mission_statement='', super_admin=False):
         self.email = email
         self.password = generate_password_hash(password).decode('utf8')
         self.first_name = first_name
         self.last_name = last_name
         self.mission_statement = mission_statement
         self.super_admin = super_admin
+        self.zip = zip
 
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'
@@ -50,6 +55,26 @@ class User(db.Model):
         s = Serializer(MAIN_APP.config['SECRET_KEY'], expires_in=expiration)
         return s.dumps({'id': self.id})
 
+    def to_dict(self, rel=None, backref=None):
+        if rel is None:
+            rel = False
+        res = {column.key: getattr(self, attr)
+               for attr, column in self.__mapper__.c.items()}
+        if rel:
+            for attr, relation in self.__mapper__.relationships.items():
+                # Avoid recursive loop between to tables.
+                if backref == relation.table:
+                    continue
+                value = getattr(self, attr)
+                if value is None:
+                    res[relation.key] = None
+                elif isinstance(value.__class__, DeclarativeMeta):
+                    res[relation.key] = value.to_dict(backref=self.__table__)
+                else:
+                    res[relation.key] = [i.to_dict(backref=self.__table__)
+                                         for i in value]
+        return res
+
     def encode_auth_token(self, user_id):
         """
         Generates the Auth Token
@@ -61,11 +86,12 @@ class User(db.Model):
                 'iat': datetime.utcnow(),
                 'sub': user_id
             }
-            return jwt.encode(
+            token = jwt.encode(
                 payload,
                 MAIN_APP.config['SECRET_KEY'],
                 algorithm='HS256'
             )
+            return token
         except Exception as e:
             return e
 
@@ -77,6 +103,7 @@ class User(db.Model):
         except SignatureExpired:
             return None  # valid token, but expired
         except BadSignature:
+            print('except')
             return None  # invalid token
         user = User.query.get(data['id'])
         return user

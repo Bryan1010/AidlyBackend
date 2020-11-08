@@ -1,7 +1,9 @@
 from models import db
 from sqlalchemy import *
 from datetime import datetime
+import json
 
+from sqlalchemy.ext.declarative import DeclarativeMeta
 
 class Company(db.Model):
     """ Company Model data class """
@@ -34,8 +36,25 @@ class Company(db.Model):
 
     active = Column(Boolean, default=False)
 
-    # positions = db.EmbeddedDocumentListField(Position)
-
+    def to_dict(self, rel=None, backref=None):
+        if rel is None:
+            rel = False
+        res = {column.key: getattr(self, attr)
+               for attr, column in self.__mapper__.c.items()}
+        if rel:
+            for attr, relation in self.__mapper__.relationships.items():
+                # Avoid recursive loop between to tables.
+                if backref == relation.table:
+                    continue
+                value = getattr(self, attr)
+                if value is None:
+                    res[relation.key] = None
+                elif isinstance(value.__class__, DeclarativeMeta):
+                    res[relation.key] = value.to_dict(backref=self.__table__)
+                else:
+                    res[relation.key] = [i.to_dict(backref=self.__table__)
+                                         for i in value]
+        return res
 
 class CompanyUsers(db.Model):
     """ Company Users Model data class """
